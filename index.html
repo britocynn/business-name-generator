@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Name Generator</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #3c2b16 0%, #1b1712 22%, #121212 58%, #0f0f0f 100%);
+      color: #f5ead9;
+      text-align: center;
+      padding: 36px 18px 60px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #f8f0e3 0%, #efdfc5 100%);
+      color: #2b241c;
+      padding: 32px 22px 30px;
+      border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(214, 178, 104, 0.35);
+    }
+
+    .title-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e0bb73, #9f6924);
+      color: #fff8ee;
+      font-size: 20px;
+      box-shadow: 0 8px 18px rgba(156, 108, 40, 0.28);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      line-height: 1.15;
+      color: #241d17;
+      letter-spacing: -0.5px;
+    }
+
+    p#subtitle {
+      margin: 10px 0 26px;
+      color: #5d5042;
+      font-size: 1.05rem;
+    }
+
+    .field-label {
+      text-align: left;
+      display: block;
+      font-weight: 700;
+      margin: 16px 0 8px;
+      color: #3d3125;
+      font-size: 0.95rem;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      margin: 0;
+      border-radius: 14px;
+      border: 1px solid #d7c3a1;
+      font-size: 16px;
+      outline: none;
+      background: #fffaf2;
+      color: #2b241c;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #b88234;
+      box-shadow: 0 0 0 4px rgba(184, 130, 52, 0.14);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 22px;
+    }
+
+    button {
+      border: none;
+      padding: 14px 22px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #generateBtn,
+    #moreBtn {
+      background: linear-gradient(135deg, #d6a84f, #9c6a26);
+      color: #fff9f0;
+      box-shadow: 0 10px 20px rgba(156, 106, 38, 0.22);
+    }
+
+    #copyBtn {
+      background: #2d241b;
+      color: #f7ead2;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.14);
+    }
+
+    #copyBtn,
+    #moreBtn {
+      display: none;
+    }
+
+    .result {
+      margin-top: 28px;
+      text-align: left;
+      background: #fffaf4;
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid #ead6b4;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
+      display: none;
+    }
+
+    .result-title {
+      margin: 0 0 16px;
+      color: #8b5e1b;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .idea {
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fffdf9 0%, #f8f0e3 100%);
+      border: 1px solid #eddcbc;
+      line-height: 1.5;
+    }
+
+    .idea:last-child {
+      margin-bottom: 0;
+    }
+
+    .footer-note {
+      margin-top: 26px;
+      color: #6b5c49;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 20px 12px 40px;
+      }
+
+      .container {
+        padding: 24px 16px 22px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 17px;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+
+      #generateBtn,
+      #copyBtn,
+      #moreBtn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="title-wrap">
+      <span class="logo-icon">✦</span>
+      <h1 id="title">Business Name Generator</h1>
+      <span class="logo-icon">✦</span>
+    </div>
+
+    <p id="subtitle">Generate business name ideas in seconds</p>
+
+    <label class="field-label" id="languageLabel" for="language">Language</label>
+    <select id="language" onchange="updateLanguage()">
+      <option value="en">English</option>
+      <option value="pt">Português</option>
+    </select>
+
+    <label class="field-label" id="interestLabel" for="interest">Business niche or keyword</label>
+    <input id="interest" placeholder="E.g. accounting, beauty, fitness, consulting" />
+
+    <div class="btn-row">
+      <button id="generateBtn" onclick="generateIdeas()">Generate Business Names</button>
+      <button id="moreBtn" onclick="generateMoreIdeas()">Generate More Names</button>
+      <button id="copyBtn" onclick="copyIdeas()">Copy Names</button>
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <div class="footer-note" id="footerNote">Smart tools for modern entrepreneurs</div>
+  </div>
+
+  <script>
+    let currentInterest = "";
+    let currentLanguage = "en";
+    let currentSetIndex = 0;
+
+    const nameSetsEn = [
+      ["Prime {interest}", "{interest} Nest", "Elevate {interest}", "{interest} Flow", "Nova {interest}"],
+      ["Golden {interest}", "{interest} Spark", "Urban {interest}", "{interest} Studio", "Vertex {interest}"],
+      ["Pure {interest}", "{interest} Bloom", "Bold {interest}", "{interest} Lab", "Next {interest}"]
+    ];
+
+    const nameSetsPt = [
+      ["Prime {interest}", "Casa {interest}", "Eleva {interest}", "{interest} Fluído", "Nova {interest}"],
+      ["Dourado {interest}", "{interest} Essência", "Urban {interest}", "Estúdio {interest}", "Vértice {interest}"],
+      ["Puro {interest}", "{interest} Brilho", "{interest} Forte", "Laboratório {interest}", "Próxima {interest}"]
+    ];
+
+    function capitalizeText(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    function fillTemplate(text, interest) {
+      return text.replaceAll("{interest}", interest);
+    }
+
+    function updateLanguage() {
+      let language = document.getElementById("language").value;
+      currentLanguage = language;
+
+      if (language === "pt") {
+        document.getElementById("title").innerText = "Gerador de Nomes de Negócio";
+        document.getElementById("subtitle").innerText = "Gera nomes de negócio em segundos";
+        document.getElementById("languageLabel").innerText = "Idioma";
+        document.getElementById("interestLabel").innerText = "Nicho ou palavra-chave do negócio";
+        document.getElementById("interest").placeholder = "Ex.: contabilidade, beleza, fitness, consultoria";
+        document.getElementById("generateBtn").innerText = "Gerar Nomes de Negócio";
+        document.getElementById("moreBtn").innerText = "Gerar Mais Nomes";
+        document.getElementById("copyBtn").innerText = "Copiar Nomes";
+        document.getElementById("footerNote").innerText = "Ferramentas inteligentes para empreendedores modernos";
+        document.title = "Gerador de Nomes de Negócio";
+      } else {
+        document.getElementById("title").innerText = "Business Name Generator";
+        document.getElementById("subtitle").innerText = "Generate business name ideas in seconds";
+        document.getElementById("languageLabel").innerText = "Language";
+        document.getElementById("interestLabel").innerText = "Business niche or keyword";
+        document.getElementById("interest").placeholder = "E.g. accounting, beauty, fitness, consulting";
+        document.getElementById("generateBtn").innerText = "Generate Business Names";
+        document.getElementById("moreBtn").innerText = "Generate More Names";
+        document.getElementById("copyBtn").innerText = "Copy Names";
+        document.getElementById("footerNote").innerText = "Smart tools for modern entrepreneurs";
+        document.title = "Business Name Generator";
+      }
+    }
+
+    function renderIdeas() {
+      const language = currentLanguage;
+      const rawInterest = currentInterest.trim();
+      const capitalizedInterest = capitalizeText(rawInterest);
+
+      const selectedSet =
+        language === "pt"
+          ? nameSetsPt[currentSetIndex % nameSetsPt.length]
+          : nameSetsEn[currentSetIndex % nameSetsEn.length];
+
+      let html = "";
+
+      if (language === "pt") {
+        html += "<div class='result-title'>Nomes gerados para: <b>" + capitalizedInterest + "</b></div>";
+      } else {
+        html += "<div class='result-title'>Names generated for: <b>" + capitalizedInterest + "</b></div>";
+      }
+
+      selectedSet.forEach(function (name, index) {
+        html += "<div class='idea'><b>" + (index + 1) + ". " + fillTemplate(name, capitalizedInterest) + "</b></div>";
+      });
+
+      document.getElementById("result").innerHTML = html;
+      document.getElementById("result").style.display = "block";
+      document.getElementById("copyBtn").style.display = "inline-block";
+      document.getElementById("moreBtn").style.display = "inline-block";
+    }
+
+    function generateIdeas() {
+      const interest = document.getElementById("interest").value.trim();
+      const language = document.getElementById("language").value;
+
+      if (interest === "") {
+        if (language === "pt") {
+          alert("Introduz um nicho ou palavra-chave.");
+        } else {
+          alert("Please enter a niche or keyword.");
+        }
+        return;
+      }
+
+      currentInterest = interest;
+      currentLanguage = language;
+      currentSetIndex = 0;
+
+      renderIdeas();
+    }
+
+    function generateMoreIdeas() {
+      if (!currentInterest.trim()) {
+        if (currentLanguage === "pt") {
+          alert("Gera primeiro os nomes iniciais.");
+        } else {
+          alert("Generate the first names before asking for more.");
+        }
+        return;
+      }
+
+      currentSetIndex++;
+      renderIdeas();
+    }
+
+    function copyIdeas() {
+      let resultText = document.getElementById("result").innerText;
+      let language = document.getElementById("language").value;
+
+      if (!resultText.trim()) {
+        if (language === "pt") {
+          alert("Ainda não há nomes para copiar.");
+        } else {
+          alert("There are no names to copy yet.");
+        }
+        return;
+      }
+
+      navigator.clipboard.writeText(resultText).then(function () {
+        if (language === "pt") {
+          alert("Nomes copiados!");
+        } else {
+          alert("Names copied!");
+        }
+      });
+    }
+
+    updateLanguage();
+  </script>
+</body>
+</html>
