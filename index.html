@@ -21,7 +21,7 @@
     }
 
     .container {
-      max-width: 780px;
+      max-width: 840px;
       margin: 0 auto;
       background: linear-gradient(180deg, #f8f0e3 0%, #efdfc5 100%);
       color: #2b241c;
@@ -136,6 +136,12 @@
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.14);
     }
 
+    #premiumBtn {
+      background: linear-gradient(135deg, #2b241c, #5a4630);
+      color: #f7ead2;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+    }
+
     #copyBtn,
     #moreBtn {
       display: none;
@@ -172,6 +178,39 @@
       margin-bottom: 0;
     }
 
+    .name-tag {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #ead7b1;
+      color: #5f451f;
+    }
+
+    .premium-box {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #2b241c, #5a4630);
+      color: #f7ead2;
+      text-align: left;
+      box-shadow: 0 12px 22px rgba(0,0,0,0.18);
+    }
+
+    .premium-box h3 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+
+    .premium-box p {
+      margin: 0 0 14px;
+      color: #f1dfc0;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
     .footer-note {
       margin-top: 26px;
       color: #6b5c49;
@@ -204,7 +243,8 @@
 
       #generateBtn,
       #copyBtn,
-      #moreBtn {
+      #moreBtn,
+      #premiumBtn {
         width: 100%;
       }
     }
@@ -219,7 +259,7 @@
       <span class="logo-icon">✦</span>
     </div>
 
-    <p id="subtitle">Generate business name ideas in seconds</p>
+    <p id="subtitle">Generate brandable business names in seconds</p>
 
     <label class="field-label" id="languageLabel" for="language">Language</label>
     <select id="language" onchange="updateLanguage()">
@@ -231,12 +271,19 @@
     <input id="interest" placeholder="E.g. accounting, beauty, fitness, consulting" />
 
     <div class="btn-row">
-      <button id="generateBtn" onclick="generateIdeas()">Generate Business Names</button>
+      <button id="generateBtn" onclick="generateIdeas()">Generate Free Names</button>
       <button id="moreBtn" onclick="generateMoreIdeas()">Generate More Names</button>
       <button id="copyBtn" onclick="copyIdeas()">Copy Names</button>
+      <button id="premiumBtn" onclick="unlockPremium()">Unlock Premium Names</button>
     </div>
 
     <div id="result" class="result"></div>
+
+    <div class="premium-box" id="premiumBox">
+      <h3 id="premiumTitle">Unlock premium brand names</h3>
+      <p id="premiumText">Get stronger, more memorable and more brandable name ideas with the premium version.</p>
+      <button id="premiumBtnBox" onclick="unlockPremium()">Unlock Premium Names</button>
+    </div>
 
     <div class="footer-note" id="footerNote">Smart tools for modern entrepreneurs</div>
   </div>
@@ -244,77 +291,210 @@
   <script>
     let currentInterest = "";
     let currentLanguage = "en";
-    let currentSetIndex = 0;
+    let currentMode = "free";
 
-    const nameSetsEn = [
-      ["Prime {interest}", "{interest} Nest", "Elevate {interest}", "{interest} Flow", "Nova {interest}"],
-      ["Golden {interest}", "{interest} Spark", "Urban {interest}", "{interest} Studio", "Vertex {interest}"],
-      ["Pure {interest}", "{interest} Bloom", "Bold {interest}", "{interest} Lab", "Next {interest}"]
+    const stripeLink = "YOUR_STRIPE_PAYMENT_LINK_HERE";
+
+    const freePrefixesEn = [
+      "Prime", "Nova", "Urban", "Golden", "Next", "Pure", "Elevate", "Bright",
+      "Apex", "Bold", "Smart", "Vertex", "Core", "Modern", "Blue", "Elite",
+      "True", "Future", "First", "Vision", "Swift", "Clear", "Strong", "Peak"
     ];
 
-    const nameSetsPt = [
-      ["Prime {interest}", "Casa {interest}", "Eleva {interest}", "{interest} Fluído", "Nova {interest}"],
-      ["Dourado {interest}", "{interest} Essência", "Urban {interest}", "Estúdio {interest}", "Vértice {interest}"],
-      ["Puro {interest}", "{interest} Brilho", "{interest} Forte", "Laboratório {interest}", "Próxima {interest}"]
+    const freeSuffixesEn = [
+      "Studio", "Lab", "Hub", "Works", "Group", "Solutions", "Collective", "Nest",
+      "Flow", "Point", "Factory", "Base", "Forge", "Bridge", "House", "Corner",
+      "Space", "Network", "Spark", "Center", "Co", "Project", "Zone", "System"
     ];
+
+    const freePrefixesPt = [
+      "Nova", "Prime", "Dourada", "Eleva", "Viva", "Brilho", "Alta", "Pura",
+      "Visão", "Forte", "Centro", "Base", "Ponto", "Casa", "Essência", "Clara",
+      "Moderna", "Rumo", "Nobre", "Valor", "Horizonte", "Raiz", "Impulso", "Vértice"
+    ];
+
+    const freeSuffixesPt = [
+      "Studio", "Lab", "Hub", "Works", "Grupo", "Soluções", "Coletivo", "Casa",
+      "Fluída", "Ponto", "Fábrica", "Base", "Oficina", "Ponte", "Espaço", "Rede",
+      "Faísca", "Centro", "Projeto", "Zona", "Sistema", "Marca", "Ateliê", "Nicho"
+    ];
+
+    const premiumRootsEn = [
+      "Vel", "Zen", "Sol", "Nex", "Alt", "Lum", "Ver", "Vir", "Nor", "Xen",
+      "Aure", "Celo", "Mira", "Tera", "Livo", "Sora", "Vanta", "Rivo", "Axi", "Elva",
+      "Orin", "Navi", "Zyra", "Kairo", "Vero", "Zento", "Avol", "Lunor", "Selva", "Trevo"
+    ];
+
+    const premiumEndingsEn = [
+      "ora", "ara", "ivo", "ion", "ella", "anta", "ero", "ava", "ix", "ary",
+      "ium", "ique", "ara", "ora", "enzo", "ique", "aris", "eva", "uno", "aris"
+    ];
+
+    const premiumTailEn = [
+      "", "", "", " Studio", " Labs", " Group", " House", " Works", " Co", " Systems"
+    ];
+
+    const premiumRootsPt = [
+      "Vel", "Sol", "Nex", "Alt", "Lum", "Ver", "Nor", "Aure", "Mira", "Tera",
+      "Livo", "Sora", "Vanta", "Rivo", "Elva", "Orin", "Nora", "Cora", "Zira", "Avel",
+      "Clari", "Doura", "Viva", "Brava", "Sera", "Véria", "Alva", "Nobre", "Prisma", "Lívia"
+    ];
+
+    const premiumEndingsPt = [
+      "ora", "ara", "iva", "ella", "anta", "eva", "ina", "aris", "una", "ira",
+      "ena", "ália", "éria", "ina", "ora", "aris"
+    ];
+
+    const premiumTailPt = [
+      "", "", "", " Studio", " Atelier", " Grupo", " House", " Lab", " Marca", " Co"
+    ];
+
+    function randomItem(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
 
     function capitalizeText(text) {
+      if (!text) return "";
       return text.charAt(0).toUpperCase() + text.slice(1);
     }
 
-    function fillTemplate(text, interest) {
-      return text.replaceAll("{interest}", interest);
+    function sanitizeWord(text) {
+      return text
+        .trim()
+        .replace(/\s+/g, " ")
+        .split(" ")
+        .map(word => capitalizeText(word))
+        .join(" ");
+    }
+
+    function generateFreeNames(keyword, language) {
+      const names = [];
+      const used = new Set();
+      const safeKeyword = sanitizeWord(keyword);
+
+      const prefixes = language === "pt" ? freePrefixesPt : freePrefixesEn;
+      const suffixes = language === "pt" ? freeSuffixesPt : freeSuffixesEn;
+
+      while (names.length < 5) {
+        const style = Math.floor(Math.random() * 4);
+        let candidate = "";
+
+        if (style === 0) {
+          candidate = `${randomItem(prefixes)} ${safeKeyword}`;
+        } else if (style === 1) {
+          candidate = `${safeKeyword} ${randomItem(suffixes)}`;
+        } else if (style === 2) {
+          candidate = `${randomItem(prefixes)} ${safeKeyword} ${randomItem(suffixes)}`;
+        } else {
+          candidate = `${randomItem(prefixes)} ${randomItem(suffixes)}`;
+        }
+
+        if (!used.has(candidate)) {
+          used.add(candidate);
+          names.push(candidate);
+        }
+      }
+
+      return names;
+    }
+
+    function generatePremiumNames(keyword, language) {
+      const names = [];
+      const used = new Set();
+      const safeKeyword = sanitizeWord(keyword);
+
+      const roots = language === "pt" ? premiumRootsPt : premiumRootsEn;
+      const endings = language === "pt" ? premiumEndingsPt : premiumEndingsEn;
+      const tails = language === "pt" ? premiumTailPt : premiumTailEn;
+
+      while (names.length < 5) {
+        const style = Math.floor(Math.random() * 4);
+        let candidate = "";
+
+        const invented = `${randomItem(roots)}${randomItem(endings)}`;
+        const invented2 = `${randomItem(roots)}${randomItem(endings)}`;
+
+        if (style === 0) {
+          candidate = `${invented}`;
+        } else if (style === 1) {
+          candidate = `${invented}${randomItem(tails)}`;
+        } else if (style === 2) {
+          candidate = `${invented} ${safeKeyword}`;
+        } else {
+          candidate = `${invented2}${randomItem(tails)}`;
+        }
+
+        candidate = candidate.replace(/\s+/g, " ").trim();
+
+        if (!used.has(candidate)) {
+          used.add(candidate);
+          names.push(candidate);
+        }
+      }
+
+      return names;
     }
 
     function updateLanguage() {
-      let language = document.getElementById("language").value;
+      const language = document.getElementById("language").value;
       currentLanguage = language;
 
       if (language === "pt") {
         document.getElementById("title").innerText = "Gerador de Nomes de Negócio";
-        document.getElementById("subtitle").innerText = "Gera nomes de negócio em segundos";
+        document.getElementById("subtitle").innerText = "Gera nomes de negócio mais fortes e brandáveis em segundos";
         document.getElementById("languageLabel").innerText = "Idioma";
         document.getElementById("interestLabel").innerText = "Nicho ou palavra-chave do negócio";
         document.getElementById("interest").placeholder = "Ex.: contabilidade, beleza, fitness, consultoria";
-        document.getElementById("generateBtn").innerText = "Gerar Nomes de Negócio";
+        document.getElementById("generateBtn").innerText = "Gerar Nomes Grátis";
         document.getElementById("moreBtn").innerText = "Gerar Mais Nomes";
         document.getElementById("copyBtn").innerText = "Copiar Nomes";
+        document.getElementById("premiumBtn").innerText = "Desbloquear Nomes Premium";
+        document.getElementById("premiumBtnBox").innerText = "Desbloquear Nomes Premium";
+        document.getElementById("premiumTitle").innerText = "Desbloqueia nomes premium";
+        document.getElementById("premiumText").innerText = "Obtém nomes mais fortes, mais memoráveis e muito mais brandáveis com a versão premium.";
         document.getElementById("footerNote").innerText = "Ferramentas inteligentes para empreendedores modernos";
         document.title = "Gerador de Nomes de Negócio";
       } else {
         document.getElementById("title").innerText = "Business Name Generator";
-        document.getElementById("subtitle").innerText = "Generate business name ideas in seconds";
+        document.getElementById("subtitle").innerText = "Generate stronger, more brandable business names in seconds";
         document.getElementById("languageLabel").innerText = "Language";
         document.getElementById("interestLabel").innerText = "Business niche or keyword";
         document.getElementById("interest").placeholder = "E.g. accounting, beauty, fitness, consulting";
-        document.getElementById("generateBtn").innerText = "Generate Business Names";
+        document.getElementById("generateBtn").innerText = "Generate Free Names";
         document.getElementById("moreBtn").innerText = "Generate More Names";
         document.getElementById("copyBtn").innerText = "Copy Names";
+        document.getElementById("premiumBtn").innerText = "Unlock Premium Names";
+        document.getElementById("premiumBtnBox").innerText = "Unlock Premium Names";
+        document.getElementById("premiumTitle").innerText = "Unlock premium brand names";
+        document.getElementById("premiumText").innerText = "Get stronger, more memorable and more brandable name ideas with the premium version.";
         document.getElementById("footerNote").innerText = "Smart tools for modern entrepreneurs";
         document.title = "Business Name Generator";
       }
     }
 
     function renderIdeas() {
+      const keyword = currentInterest.trim();
       const language = currentLanguage;
-      const rawInterest = currentInterest.trim();
-      const capitalizedInterest = capitalizeText(rawInterest);
 
-      const selectedSet =
-        language === "pt"
-          ? nameSetsPt[currentSetIndex % nameSetsPt.length]
-          : nameSetsEn[currentSetIndex % nameSetsEn.length];
-
-      let html = "";
-
-      if (language === "pt") {
-        html += "<div class='result-title'>Nomes gerados para: <b>" + capitalizedInterest + "</b></div>";
+      let names = [];
+      if (currentMode === "premium") {
+        names = generatePremiumNames(keyword, language);
       } else {
-        html += "<div class='result-title'>Names generated for: <b>" + capitalizedInterest + "</b></div>";
+        names = generateFreeNames(keyword, language);
       }
 
-      selectedSet.forEach(function (name, index) {
-        html += "<div class='idea'><b>" + (index + 1) + ". " + fillTemplate(name, capitalizedInterest) + "</b></div>";
+      let html = "";
+      if (language === "pt") {
+        html += `<div class="result-title">Nomes gerados para: <b>${sanitizeWord(keyword)}</b></div>`;
+      } else {
+        html += `<div class="result-title">Names generated for: <b>${sanitizeWord(keyword)}</b></div>`;
+      }
+
+      names.forEach((name, index) => {
+        html += `<div class="idea">`;
+        html += `<div class="name-tag">${currentMode === "premium" ? (language === "pt" ? "PREMIUM" : "PREMIUM") : (language === "pt" ? "GRÁTIS" : "FREE")}</div>`;
+        html += `<div><b>${index + 1}. ${name}</b></div>`;
+        html += `</div>`;
       });
 
       document.getElementById("result").innerHTML = html;
@@ -324,10 +504,10 @@
     }
 
     function generateIdeas() {
-      const interest = document.getElementById("interest").value.trim();
+      const keyword = document.getElementById("interest").value.trim();
       const language = document.getElementById("language").value;
 
-      if (interest === "") {
+      if (keyword === "") {
         if (language === "pt") {
           alert("Introduz um nicho ou palavra-chave.");
         } else {
@@ -336,10 +516,9 @@
         return;
       }
 
-      currentInterest = interest;
+      currentInterest = keyword;
       currentLanguage = language;
-      currentSetIndex = 0;
-
+      currentMode = "free";
       renderIdeas();
     }
 
@@ -353,13 +532,12 @@
         return;
       }
 
-      currentSetIndex++;
       renderIdeas();
     }
 
     function copyIdeas() {
-      let resultText = document.getElementById("result").innerText;
-      let language = document.getElementById("language").value;
+      const resultText = document.getElementById("result").innerText;
+      const language = document.getElementById("language").value;
 
       if (!resultText.trim()) {
         if (language === "pt") {
@@ -377,6 +555,10 @@
           alert("Names copied!");
         }
       });
+    }
+
+    function unlockPremium() {
+      window.location.href = stripeLink;
     }
 
     updateLanguage();
