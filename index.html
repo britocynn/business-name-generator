@@ -558,6 +558,8 @@
     }
 
 async function unlockPremium() {
+  alert("clicou no premium");
+
   const user = await getCurrentUser();
 
   if (!user) {
@@ -582,11 +584,11 @@ async function unlockPremium() {
     if (data.url) {
       window.location.href = data.url;
     } else {
-      alert("Could not start checkout.");
+      alert("Erro no checkout: " + JSON.stringify(data));
     }
   } catch (error) {
     console.error(error);
-    alert("Something went wrong.");
+    alert("Erro técnico: " + error.message);
   }
 }
 
