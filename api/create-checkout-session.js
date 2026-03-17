@@ -13,8 +13,8 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.SITE_URL}/success.html`,
-      cancel_url: `${process.env.SITE_URL}`,
+      success_url: 'https://business-name-generator-fawn.vercel.app/success.html',
+cancel_url: 'https://business-name-generator-fawn.vercel.app',
     });
 
     res.status(200).json({ url: session.url });
