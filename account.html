@@ -44,6 +44,7 @@
 <body>
   <div class="box">
     <h1>My Account</h1>
+    <p id="status"></p>
     <p id="emailText">Loading...</p>
     <p id="planText">Checking plan...</p>
 
@@ -55,24 +56,36 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/supabase-client.js"></script>
   <script src="/js/auth.js"></script>
-  <script>
-    async function loadAccount() {
-      const user = await getCurrentUser();
+<script>
+  async function checkUser() {
+    const user = await getCurrentUser();
 
-      if (!user) {
-        window.location.href = "/login.html";
-        return;
-      }
-
-      const profile = await getProfile();
-
-      document.getElementById("emailText").innerText = "Email: " + user.email;
-      document.getElementById("planText").innerText = profile && profile.is_premium
-        ? "Plan: Premium"
-        : "Plan: Free";
+    if (!user) {
+      window.location.href = "/login.html";
+      return;
     }
+  }
 
-    loadAccount();
-  </script>
+  async function loadProfile() {
+    const user = await getCurrentUser();
+
+    if (!user) return;
+
+    const profile = await getProfile();
+
+    document.getElementById("emailText").innerText = "Email: " + user.email;
+
+    if (profile && profile.is_premium) {
+      document.getElementById("status").innerText = "Premium User";
+      document.getElementById("planText").innerText = "Plan: Premium";
+    } else {
+      document.getElementById("status").innerText = "Free User";
+      document.getElementById("planText").innerText = "Plan: Free";
+    }
+  }
+
+  checkUser();
+  loadProfile();
+</script>
 </body>
 </html>
