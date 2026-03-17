@@ -557,9 +557,38 @@
       });
     }
 
-    function unlockPremium() {
-      window.location.href = stripeLink;
+async function unlockPremium() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        email: user.email
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Could not start checkout.");
     }
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong.");
+  }
+}
 
     updateLanguage();
   </script>
