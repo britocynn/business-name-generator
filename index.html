@@ -560,23 +560,9 @@
 async function unlockPremium() {
   alert("clicou no premium");
 
-  const user = await getCurrentUser();
-
-  if (!user) {
-    window.location.href = "/login.html";
-    return;
-  }
-
   try {
     const response = await fetch("/api/create-checkout-session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        userId: user.id,
-        email: user.email
-      })
+      method: "POST"
     });
 
     const data = await response.json();
@@ -584,7 +570,7 @@ async function unlockPremium() {
     if (data.url) {
       window.location.href = data.url;
     } else {
-      alert("Erro no checkout: " + JSON.stringify(data));
+      alert("Erro: " + JSON.stringify(data));
     }
   } catch (error) {
     console.error(error);
