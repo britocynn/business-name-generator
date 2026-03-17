@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #3c2b16 0%, #1b1712 22%, #121212 58%, #0f0f0f 100%);
+      color: #f5ead9;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .box {
+      max-width: 600px;
+      margin: auto;
+      background: linear-gradient(180deg, #f8f0e3 0%, #efdfc5 100%);
+      color: #2b241c;
+      padding: 30px 20px;
+      border-radius: 20px;
+    }
+    button, a.linkbtn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      box-sizing: border-box;
+      text-decoration: none;
+      background: linear-gradient(135deg, #d6a84f, #9c6a26);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #logoutBtn {
+      background: #2d241b;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>My Account</h1>
+    <p id="emailText">Loading...</p>
+    <p id="planText">Checking plan...</p>
+
+    <a class="linkbtn" href="/index.html">Open free generator</a>
+    <a class="linkbtn" href="/premium.html">Open premium generator</a>
+    <button id="logoutBtn" onclick="signOutUser()">Log out</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-client.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    async function loadAccount() {
+      const user = await getCurrentUser();
+
+      if (!user) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      const profile = await getProfile();
+
+      document.getElementById("emailText").innerText = "Email: " + user.email;
+      document.getElementById("planText").innerText = profile && profile.is_premium
+        ? "Plan: Premium"
+        : "Plan: Free";
+    }
+
+    loadAccount();
+  </script>
+</body>
+</html>
