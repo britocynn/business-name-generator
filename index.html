@@ -291,7 +291,7 @@
   <script>
     let currentInterest = "";
     let currentLanguage = "en";
-    let currentMode = "free";
+    let currentMode = localStorage.getItem("premiumUser") === "true" ? "premium" : "free";
 
     const stripeLink = "YOUR_STRIPE_PAYMENT_LINK_HERE";
 
@@ -518,7 +518,7 @@
 
       currentInterest = keyword;
       currentLanguage = language;
-      currentMode = "free";
+      currentMode = localStorage.getItem("premiumUser") === "true" ? "premium" : "free";
       renderIdeas();
     }
 
